@@ -1,2 +1,3 @@
 # nea
-RSS delivered to my inbox
+
+Νέα – Greek for _news_.
