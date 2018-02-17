@@ -7,7 +7,7 @@ Post = namedtuple('Post', ['title', 'link'])
 
 pub_format = '%a, %d %b %Y %H:%M:%S'
 today = date.today()
-week_start = today - timedelta(days=8)
+week_start = today - timedelta(days=14)
 week_end = today - timedelta(days=1)
 
 
