@@ -6,8 +6,8 @@ from email.MIMEText import MIMEText
 
 
 def send_mail(content):
-    email_from = os.environ['DIGTEST_MAIL']
-    email_to = [os.environ['DIGTEST_MAIL']]
+    email_from = os.environ['DIGEST_MAIL']
+    email_to = [os.environ['DIGEST_MAIL']]
 
     msg = MIMEMultipart()
     msg['From'] = email_from
@@ -17,6 +17,6 @@ def send_mail(content):
 
     msg.attach(MIMEText(content, 'html'))
 
-    smtp = smtplib.SMTP('localhost', 1025)
+    smtp = smtplib.SMTP('localhost')
     smtp.sendmail(email_from, email_to, msg.as_string())
     smtp.close()
