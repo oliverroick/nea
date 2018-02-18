@@ -18,3 +18,12 @@ I want to build a thing that:
 *	Parse the feeds and extract all items that were published during the last seven days. 
 *	Sends an email to me,  containing titles and links to all the new articles grouped by blog. 
 *	Runs as a cronjob every Mondy morning. 
+
+## Running the thing locally
+
+Use the `DebuggingServer`:
+
+```
+python -m smtpd -n -c DebuggingServer localhost:1025
+```
+

@@ -26,4 +26,7 @@ def render(blogs):
                                          link=item.link,
                                          title=item.title))
 
+    if not posts:
+        return None
+
     return mail.substitute(posts=''.join(posts))
