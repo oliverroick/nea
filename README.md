@@ -27,3 +27,11 @@ Use the `DebuggingServer`:
 python -m smtpd -n -c DebuggingServer localhost:1025
 ```
 
+
+## Running on production
+
+Setup a cronjob using:
+
+```
+DIGEST_MAIL="Your name <your.name@example.com>" FEEDS=/opt/wherever/yourstuff/is/feeds.txt python /opt/wherever/yourstuff/is/run.py
+```
