@@ -15,7 +15,7 @@ def send_mail(content):
     msg['Date'] = formatdate(localtime=True)
     msg['Subject'] = 'Weekly digest'
 
-    msg.attach(MIMEText(content, 'html'))
+    msg.attach(MIMEText(content.encode('utf-8'), 'html'))
 
     smtp = smtplib.SMTP('localhost')
     smtp.sendmail(email_from, email_to, msg.as_string())
