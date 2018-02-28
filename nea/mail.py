@@ -1,21 +1,18 @@
 import os
 import smtplib
-from email.MIMEMultipart import MIMEMultipart
-from email.Utils import COMMASPACE, formatdate
-from email.MIMEText import MIMEText
+from email.message import EmailMessage
 
 
 def send_mail(content):
     email_from = os.environ['DIGEST_MAIL']
     email_to = [os.environ['DIGEST_MAIL']]
 
-    msg = MIMEMultipart()
+    msg = EmailMessage()
     msg['From'] = email_from
-    msg['To'] = COMMASPACE.join(email_to)
-    msg['Date'] = formatdate(localtime=True)
+    msg['To'] = ', '.join(email_to)
     msg['Subject'] = 'Weekly digest'
 
-    msg.attach(MIMEText(content.encode('utf-8'), 'html'))
+    msg.set_content(content)
 
     smtp = smtplib.SMTP('localhost')
     smtp.sendmail(email_from, email_to, msg.as_string())

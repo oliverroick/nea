@@ -1,9 +1,11 @@
-import urllib2
+from urllib.request import Request, urlopen
 
 
 def download_feed(url):
-    response = urllib2.urlopen(url)
-    return response.read()
+    request = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    with urlopen(request) as response:
+        html = response.read()
+    return html
 
 
 def get_feeds(urls):
