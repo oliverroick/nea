@@ -16,6 +16,6 @@ def send_mail(content):
     body = MIMEText(content, 'html')
     msg.attach(body)
 
-    smtp = smtplib.SMTP('localhost', 1025)
+    smtp = smtplib.SMTP('localhost')
     smtp.sendmail(email_from, email_to, msg.as_string())
     smtp.close()
