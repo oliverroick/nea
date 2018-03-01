@@ -12,7 +12,8 @@ week_end = today - timedelta(days=1)
 
 
 def is_recent(item):
-    date_str = item.findtext('pubDate')[:-6]
+    pub_date = item.findtext('pubDate')
+    date_str = pub_date[:pub_date.rfind(' ')]
     date = datetime.strptime(date_str, pub_format).date()
     return week_start <= date and date <= week_end
 

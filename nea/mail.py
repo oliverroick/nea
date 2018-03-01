@@ -1,8 +1,7 @@
 import os
 import smtplib
-from email.MIMEMultipart import MIMEMultipart
-from email.Utils import COMMASPACE, formatdate
-from email.MIMEText import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 
 def send_mail(content):
@@ -11,11 +10,11 @@ def send_mail(content):
 
     msg = MIMEMultipart()
     msg['From'] = email_from
-    msg['To'] = COMMASPACE.join(email_to)
-    msg['Date'] = formatdate(localtime=True)
+    msg['To'] = ', '.join(email_to)
     msg['Subject'] = 'Weekly digest'
 
-    msg.attach(MIMEText(content.encode('utf-8'), 'html'))
+    body = MIMEText(content, 'html')
+    msg.attach(body)
 
     smtp = smtplib.SMTP('localhost')
     smtp.sendmail(email_from, email_to, msg.as_string())

@@ -18,7 +18,7 @@ post = Template('<li>$blog_title: <a href="$link">$title</a></li>')
 
 def render(blogs):
     posts = []
-    blogs = filter(lambda b: b.items > 0, blogs)
+    blogs = filter(lambda b: len(b.items) > 0, blogs)
 
     for blog in blogs:
         for item in blog.items:
