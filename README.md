@@ -16,22 +16,16 @@ I want to build a thing that:
 *	Takes in a list of RSS feeds. That list will be in a file for the time being. 
 *	Pull the updates of all feeds.
 *	Parse the feeds and extract all items that were published during the last seven days. 
-*	Sends an email to me,  containing titles and links to all the new articles grouped by blog. 
-*	Runs as a cronjob every Mondy morning. 
+*	Sends an email to me, containing titles and links to all the new articles grouped by blog. 
 
-## Running the thing locally
+## AWS step functions
 
-Use the `DebuggingServer`:
+This branch is work in progress.
 
-```
-python -m smtpd -n -c DebuggingServer localhost:1025
-```
+- Every file in `lambdas` is confirgured as a separated Lambda function on AWS.
+- `state_machine_config.json` contains the config for the AWS step function state machine. 
+- The step function is kicked of using a Cloudwatch event every Monday morning. 
 
+## TODO
 
-## Running on production
-
-Setup a cronjob using:
-
-```
-DIGEST_MAIL="Your name <your.name@example.com>" FEEDS=/opt/wherever/yourstuff/is/feeds.txt python /opt/wherever/yourstuff/is/run.py
-```
+- Codify setup in a Cloudformation template
