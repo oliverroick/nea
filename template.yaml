@@ -1,0 +1,41 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: Nea Stack
+
+Parameters:
+  Environment:
+    Type: String
+Resources:
+  DownloadFeed:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub nea-${Environment}-download_feed
+      Handler: nea_download_feed.lambda_handler
+      Runtime: python3.6
+      CodeUri: lambdas
+      MemorySize: 128 
+      Timeout: 30
+      Policies:
+        - AWSLambdaBasicExecutionRole
+  ComposeResults:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub nea-${Environment}-compose_results
+      Handler: nea_compose_results.lambda_handler
+      Runtime: python3.6
+      CodeUri: lambdas
+      MemorySize: 128 
+      Timeout: 30
+      Policies:
+        - AWSLambdaBasicExecutionRole
+  SendMail:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub nea-${Environment}-send_email
+      Handler: nea_send_email.lambda_handler
+      Runtime: python3.6
+      CodeUri: lambdas
+      MemorySize: 128 
+      Timeout: 30
+      Policies:
+        - AWSLambdaBasicExecutionRole

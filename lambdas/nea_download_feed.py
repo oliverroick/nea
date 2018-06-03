@@ -38,6 +38,7 @@ def parse_blog(src):
     items = [parse_item(item) for item in recent]
     return {"title": title, "items": items}
 
+
 def lambda_handler(event, context):
     feeds = (download_feed(url) for url in event['urls'])
     return [parse_blog(feed) for feed in feeds]
