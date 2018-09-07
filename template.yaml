@@ -1,0 +1,164 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: Nea Stack
+
+Parameters:
+  Environment:
+    Type: String
+  Email:
+    Type: String
+Resources:
+  SesSendMailExecutionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action: "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - PolicyName: SesSendMailExecutionPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "ses:SendEmail"
+                Resource: "*"
+  StatesExecutionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - !Sub states.${AWS::Region}.amazonaws.com
+            Action: "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - PolicyName: StatesExecutionPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "lambda:InvokeFunction"
+                Resource: "*"
+
+  CloudwatchEventRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - events.amazonaws.com
+            Action: "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - PolicyName: StatesExecutionPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "states:StartExecution"
+                Resource: !Ref NeaStateMachine
+
+  DownloadFeed:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub nea-${Environment}-download_feed
+      Handler: nea_download_feed.lambda_handler
+      Runtime: python3.6
+      CodeUri: lambdas
+      MemorySize: 128 
+      Timeout: 30
+      Policies:
+        - AWSLambdaBasicExecutionRole
+  ComposeResults:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub nea-${Environment}-compose_results
+      Handler: nea_compose_results.lambda_handler
+      Runtime: python3.6
+      CodeUri: lambdas
+      MemorySize: 128 
+      Timeout: 30
+      Policies:
+        - AWSLambdaBasicExecutionRole
+  SendMail:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub nea-${Environment}-send_email
+      Handler: nea_send_email.lambda_handler
+      Runtime: python3.6
+      CodeUri: lambdas
+      MemorySize: 128 
+      Timeout: 30
+      Role: !GetAtt [ SesSendMailExecutionRole, Arn ]
+
+  NeaStateMachine:
+    Type: "AWS::StepFunctions::StateMachine"
+    Properties:
+      DefinitionString:
+        !Sub
+          - |-
+            {
+              "StartAt": "DownloadFeeds",
+              "States": {
+                "DownloadFeeds": {
+                  "Type": "Task",
+                  "Resource": "${downloadFeedsArn}",
+                  "Next": "ComposeResults",
+                  "ResultPath": "$.results"
+                },
+                "ComposeResults": {
+                  "Type": "Task",
+                  "Resource": "${composeResultsArn}",
+                  "Next": "SendEmail",
+                  "ResultPath": "$.message"
+                },
+                "SendEmail": {
+                  "Type": "Task",
+                  "Resource": "${sendMailArn}",
+                  "End": true
+                }
+              }
+            }
+          - {downloadFeedsArn: !GetAtt [ DownloadFeed, Arn ],
+             composeResultsArn: !GetAtt [ ComposeResults, Arn ],
+             sendMailArn: !GetAtt [ SendMail, Arn ]}
+      RoleArn: !GetAtt [ StatesExecutionRole, Arn ]
+
+  NeaTrigger:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: "Triggers the NeaStateMachine"
+      ScheduleExpression: "cron(0 7 ? * 2 *)"
+      Targets:
+        - Arn: !Ref NeaStateMachine
+          Id: NeaTrigger
+          Input: 
+            !Sub
+              |-
+              {
+                "email_from": "${Email}",
+                "email_to": "${Email}",
+                "urls": [
+                  "https://macwright.org/rss.xml",
+                  "http://randsinrepose.com/feed/",
+                  "https://www.zeldman.com/feed/",
+                  "https://m.signalvnoise.com/feed",
+                  "https://opengovpartnership.de/feed/"
+                ]
+              }
+          RoleArn: !GetAtt [ CloudwatchEventRole, Arn ]

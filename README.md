@@ -16,22 +16,13 @@ I want to build a thing that:
 *	Takes in a list of RSS feeds. That list will be in a file for the time being. 
 *	Pull the updates of all feeds.
 *	Parse the feeds and extract all items that were published during the last seven days. 
-*	Sends an email to me,  containing titles and links to all the new articles grouped by blog. 
-*	Runs as a cronjob every Mondy morning. 
+*	Sends an email to me, containing titles and links to all the new articles grouped by blog. 
 
-## Running the thing locally
+## Deploy
 
-Use the `DebuggingServer`:
+To deploy, run the deployment script:
 
-```
-python -m smtpd -n -c DebuggingServer localhost:1025
-```
+```sh
+./deploy.sh {email} {aws profile} {stage}
 
-
-## Running on production
-
-Setup a cronjob using:
-
-```
-DIGEST_MAIL="Your name <your.name@example.com>" FEEDS=/opt/wherever/yourstuff/is/feeds.txt python /opt/wherever/yourstuff/is/run.py
 ```

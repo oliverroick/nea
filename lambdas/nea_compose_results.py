@@ -18,15 +18,19 @@ post = Template('<li>$blog_title: <a href="$link">$title</a></li>')
 
 def render(blogs):
     posts = []
-    blogs = filter(lambda b: len(b.items) > 0, blogs)
+    blogs = filter(lambda b: len(b['items']) > 0, blogs)
 
     for blog in blogs:
-        for item in blog.items:
-            posts.append(post.substitute(blog_title=blog.title,
-                                         link=item.link,
-                                         title=item.title))
+        for item in blog['items']:
+            posts.append(post.substitute(blog_title=blog['title'],
+                                         link=item['link'],
+                                         title=item['title']))
 
     if not posts:
         return None
 
     return mail.substitute(posts=''.join(posts))
+
+
+def lambda_handler(event, context):
+    return render(event['results'])

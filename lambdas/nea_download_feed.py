@@ -1,9 +1,15 @@
-from collections import namedtuple
 from xml.etree import ElementTree as etree
 from datetime import date, datetime, timedelta
 
-Blog = namedtuple('Blog', ['title', 'items'])
-Post = namedtuple('Post', ['title', 'link'])
+from urllib.request import Request, urlopen
+
+
+def download_feed(url):
+    request = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    with urlopen(request) as response:
+        html = response.read().decode('utf-8')
+    return html
+
 
 pub_format = '%a, %d %b %Y %H:%M:%S'
 today = date.today()
@@ -21,7 +27,7 @@ def is_recent(item):
 def parse_item(item):
     title = item.findtext('title')
     link = item.findtext('link')
-    return Post(title=title, link=link)
+    return {"title": title, "link": link}
 
 
 def parse_blog(src):
@@ -30,4 +36,9 @@ def parse_blog(src):
     items = blog_xml.findall('channel/item')
     recent = filter(is_recent, items)
     items = [parse_item(item) for item in recent]
-    return Blog(title=title, items=items)
+    return {"title": title, "items": items}
+
+
+def lambda_handler(event, context):
+    feeds = (download_feed(url) for url in event['urls'])
+    return [parse_blog(feed) for feed in feeds]
