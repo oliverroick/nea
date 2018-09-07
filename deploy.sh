@@ -1,7 +1,8 @@
-# dev:   ./deploy.sh aws_profile stage
+# dev:   ./deploy.sh email aws_profile stage
 
-PROFILE=${1:-default}
-STAGE=${2:-dev}
+EMAIL=${1}
+PROFILE=${2:-default}
+STAGE=${3:-dev}
 
 LAMBDAS_BUCKET=$PROFILE-nea-$STAGE-lambdas
 
@@ -24,5 +25,5 @@ aws cloudformation deploy                     \
     --template-file build/output.yaml         \
     --stack-name nea-$STAGE                   \
     --capabilities CAPABILITY_IAM             \
-    --parameter-overrides Environment=$STAGE  \
-    --profile=$PROFILE
+    --profile=$PROFILE                        \
+    --parameter-overrides Email=$EMAIL Environment=$STAGE

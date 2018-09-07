@@ -18,14 +18,11 @@ I want to build a thing that:
 *	Parse the feeds and extract all items that were published during the last seven days. 
 *	Sends an email to me, containing titles and links to all the new articles grouped by blog. 
 
-## AWS step functions
+## Deploy
 
-This branch is work in progress.
+To deploy, run the deployment script:
 
-- Every file in `lambdas` is confirgured as a separated Lambda function on AWS.
-- `state_machine_config.json` contains the config for the AWS step function state machine. 
-- The step function is kicked of using a Cloudwatch event every Monday morning. 
+```sh
+./deploy.sh {email} {aws profile} {stage}
 
-## TODO
-
-- Codify setup in a Cloudformation template
+```
