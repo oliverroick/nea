@@ -1,0 +1,21 @@
+language: python
+python:
+  - "3.6"
+
+env:
+  global:
+    - AWS_DEFAULT_REGION=us-west-2
+    - secure: "lledLwi3Pqd8zr/7FFRhEIojRhfVHCiTZCr6gyBCRJfR93lbN/Kv7xSRasri2MzLcjaVOjVWygCi65KhLNz1vSz5wzwVMde4pXSNR+qdH9u7TYOeClnJZktyxQRcvn2xfQrX5PvRjDDwUW/x9r/uIBmcUxDcR38s8pXpM0It/dzyB/ZZJz9H67DqSh3eJJuzKev882Jvwnh3LlEulw93/d4ccJPIdXGA8cJ3A2LEAYQ5a9tqy43N3WjTIC7u/Zb2ddpww5Ul7m9vwS3uswxUSqtu/9TJKyoiTtA6eESRrkxjKAI4ZxxXAXEB0TPoPNNB5V7/ui8fiWQbRJFofZ/f6XOfCD1XwNGF/7YfQKlcKo8bC3KpqbAPw98jgTxm7LcBid61rAIgY9XfgMhdas6voQpECK6l8rcoR7jfcCmuJpJ6DeH2VFpSPAVQnRAs9z9B2xORRgwEd8lyUY6DLNExZuanc75KXZvYENpFCREOKoCXk9gRMjftW1HZsyaFhl6trJn5/4l+ATy1geIDH34Q0Oks8hfNvm0o6B77ZuJoohBZ11uoAQbq+F0vyqeHuxwYZ7eGsgX2WTy4aJ/jwMxT7pPSAMSRAcY00m6kyd6up7OKivu9p83R6Bc8C92ysswBNLaJZQGvpppBMpXKGaerhTl7oUv7KQWUBeEw4MDsNZI="
+    - secure: "GFfBMojuZdhzslGIeOM+D5hI8cxsvuXT4XXBzJZgw+poNdvPedlDUKAn+tMvoNQz1qmMqhHes8w5REgItdlX0/taPFPJpX1G03x3Ru1SWOX5VxYlOfR0xJXjKhhN8YEaetFgDbMswVw1YmIGIMQbbbjRq7FkqFACAHRV+U1WSb2uudZf9L0r4SlpCfCgCKJ1NI5qausSAECi0U2W767fvgOYnRSLOoIebKKG+CfoKhSIzR4tAfIPDfv5G1A98/R2vgpvt3N+HAQO9bhSVg/ludRzL6ML92b+05Kte6pHURdZ/kSUwfok7vZkF8VTWl+i2bBATGfAosGpCY9IBMtvvIqSV1NvP+K+VWrYo8KrTPfNS7Ygs8cb1m1pVH9NqhtMc7ZEgdnRLIAvErEHMrKkeBZvMCBrNuxq3h1EXoc1BrWLK95+U8X6izGOgELPpJ9deMlk9H+sT6Z9OYFmZjsWEr5hFIZ01Bybz+QkDauwOVVrvy5egZJIC9vKtkTRD2UcJ0UBuxU5T5Znt4Rw3Lz7ECoOQ16d6ipfPrgY1IALir7TxLEVM3fJOZs7J/dVh+PGPWd6nb4cxI1UcQCPVsycYEoYl2KDPy2FVgBHnlVBcHLeyqBXGW+FCzPqshOot+OAh616g2QZdePQNS+S+95Za8z7kh+leF/m1yPbBMa/23w="
+    - secure: "MUqD+9r2DHe86tD0KfksXJ0ZAyD/2n11zdK7qYtIJtttWmQ4TXJcEsldCVr56dDJxjlRLmdmDeSzbPegxqP50/zAZFn6yXE00m44wqXD295LaDmSqo8KuISk6lnNVr6sk9SzCQByRep+gp/PoFjsXl2ElOU55M/m4ayoesqkjTTKMOWAOVKG+NAjxHvQxsMXfpZ15+gBJSk6hu3Zwjzge4OKYXZVtxBnhQlcGUhf66hqh97gN1yfOdfh5soF+CuRycrn+BCQT0dNXblUyZXsMIujkERTSY7URbDzud0KAMx/3c7sa8Gg8XbP754DZ6qtHvnKMP2uWTitGZLPTRqDIiBUle4c3zM/KqIqH0LLaZ906njTV4r61MPVBduv4JL3imbUMkg2FTsr/L0Rn3y7ZxnWftuDyj7vHOyBdoXm8/gTrAKOiV10foSgWhFlZ+9YC148efqsRjQMk6XqhcH55ZtU5ElsSNL1/EsDRIFJAvf70sV5MlUIszk9DaSz3dB2lD8hpzyb7xiomuL0nipqIu72DlwrKjx1r4sDUGzkB5GbbjOeeYl/vIwtKsOvUmJI5fiyXWfPZM42npVRcSMfm8d4jvziowDLNLdCFWYKEyqWjbNuu321JLYyxfv36Vx+vjv4nzGygZWVPoZNnIU3RJJPVA8AlR5BjPZb1j6eCd8="
+
+jobs:
+  include:
+    - stage: Test
+      script:
+        - echo "Write some tests you lazy bastard"
+    - stage: Deploy
+      if: branch = master
+      script:
+        - "pip install awscli"
+        - "./deploy.sh --email=$EMAIL --stage=$TRAVIS_BRANCH"
