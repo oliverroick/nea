@@ -24,6 +24,12 @@ then
 fi
 
 
+if [[ -z "${AWS_ACCESS_KEY_ID}" ]] && [[ -z "${AWS_SECRET_ACCESS_KEY}" ]]
+then
+    echo "AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY not set, using profile $PROFILE"
+    USE_PROFILE=1
+fi
+
 
 LAMBDAS_BUCKET=$PROFILE-nea-$STAGE-lambdas
 
@@ -32,19 +38,19 @@ rm -rf build
 mkdir build
 
 # make the deployment bucket in case it doesn't exist
-aws s3 mb s3://$LAMBDAS_BUCKET --profile=$PROFILE
+aws s3 mb s3://$LAMBDAS_BUCKET ${USE_PROFILE:+--profile $PROFILE}
 
 # generate next stage yaml file
 aws cloudformation package                   \
     --template-file template.yaml            \
     --output-template-file build/output.yaml \
     --s3-bucket $LAMBDAS_BUCKET              \
-    --profile=$PROFILE
+    ${USE_PROFILE:+--profile $PROFILE}
 
 # the actual deployment step
 aws cloudformation deploy                     \
     --template-file build/output.yaml         \
     --stack-name nea-$STAGE                   \
     --capabilities CAPABILITY_IAM             \
-    --profile=$PROFILE                        \
+    ${USE_PROFILE:+--profile $PROFILE}        \
     --parameter-overrides Email=$EMAIL Environment=$STAGE
