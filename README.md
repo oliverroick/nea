@@ -23,6 +23,14 @@ I want to build a thing that:
 To deploy, run the deployment script:
 
 ```sh
-./deploy.sh {email} {aws profile} {stage}
+./deploy.sh --email=joe@example.com --profile=joe --stage=prod
 
 ```
+
+### Arguments
+
+| argument             | default   | description                                                 |
+|----------------------|-----------|-------------------------------------------------------------|
+| `email`              |           | The address used as sender and receiver for the feed email. | 
+| `profile` (optional) | `default` | AWS credentials profile to use when deploying.              |
+| `stage` (optional)   | `dev`     | The name of the stage.                                      |

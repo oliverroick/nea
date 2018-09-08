@@ -1,8 +1,29 @@
-# dev:   ./deploy.sh email aws_profile stage
+#!/bin/bash
 
-EMAIL=${1}
-PROFILE=${2:-default}
-STAGE=${3:-dev}
+PROFILE="default"
+STAGE="dev"
+
+while [ "$1" != "" ]; do
+    IFS='=' read -r -a arg <<< "$1"
+
+    case ${arg[0]} in
+        --email )          EMAIL=${arg[1]}
+                           ;;
+        --stage )          STAGE=${arg[1]}
+                           ;;
+        --profile )        PROFILE=${arg[1]}
+                           ;;
+    esac
+    shift
+done
+
+if [ -z "$EMAIL" ]
+then
+    echo "Argument email not provided"
+    exit 1
+fi
+
+
 
 LAMBDAS_BUCKET=$PROFILE-nea-$STAGE-lambdas
 
