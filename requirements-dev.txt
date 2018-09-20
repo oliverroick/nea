@@ -1,2 +1,2 @@
-pytest
-boto3
+pytest==3.8.0
+boto3==1.9.7
