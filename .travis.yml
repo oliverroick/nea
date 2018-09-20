@@ -13,7 +13,7 @@ jobs:
   include:
     - stage: Test
       script:
-        - pip install pytest
+        - pip install -r requirements-dev.txt
         - pytest
     - stage: Deploy
       if: branch = master

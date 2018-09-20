@@ -2,8 +2,8 @@ import boto3
 
 
 def lambda_handler(event, context):
-    toEmail = event['email_from']
-    fromEmail = event['email_to']
+    toEmail = event['email_to']
+    fromEmail = event['email_from']
     replyTo = fromEmail
 
     subject = 'Weekly Digest'
