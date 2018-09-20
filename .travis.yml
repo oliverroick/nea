@@ -13,7 +13,8 @@ jobs:
   include:
     - stage: Test
       script:
-        - echo "Write some tests you lazy bastard"
+        - pip install pytest
+        - pytest
     - stage: Deploy
       if: branch = master
       script:
