@@ -33,4 +33,8 @@ def render(blogs):
 
 
 def lambda_handler(event, context):
-    return render(event['results'])
+    return {
+        'message': render(event['blogs']),
+        'email_from': event['email_from'],
+        'email_to': event['email_to'],
+    }

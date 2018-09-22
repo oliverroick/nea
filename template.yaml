@@ -73,11 +73,11 @@ Resources:
                   - "states:StartExecution"
                 Resource: !Ref NeaStateMachine
 
-  DownloadFeed:
+  GetBlog:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub nea-${Environment}-download_feed
-      Handler: nea_download_feed.lambda_handler
+      FunctionName: !Sub nea-${Environment}-get_blog
+      Handler: nea_get_blog.lambda_handler
       Runtime: python3.6
       CodeUri: lambdas
       MemorySize: 128 
@@ -113,19 +113,26 @@ Resources:
         !Sub
           - |-
             {
-              "StartAt": "DownloadFeeds",
+              "StartAt": "GetBlog",
               "States": {
-                "DownloadFeeds": {
+                "GetBlog": {
                   "Type": "Task",
-                  "Resource": "${downloadFeedsArn}",
-                  "Next": "ComposeResults",
-                  "ResultPath": "$.results"
+                  "Resource": "${getBlogArn}",
+                  "Next": "LoopFeedsChoice"
+                },
+                "LoopFeedsChoice": {
+                  "Type": "Choice",
+                  "Choices": [{
+                    "Variable": "$.urls",
+                    "NumericEquals": -1,
+                    "Next": "ComposeResults"
+                  }],
+                  "Default": "GetBlog"
                 },
                 "ComposeResults": {
                   "Type": "Task",
                   "Resource": "${composeResultsArn}",
-                  "Next": "SendEmail",
-                  "ResultPath": "$.message"
+                  "Next": "SendEmail"
                 },
                 "SendEmail": {
                   "Type": "Task",
@@ -134,7 +141,7 @@ Resources:
                 }
               }
             }
-          - {downloadFeedsArn: !GetAtt [ DownloadFeed, Arn ],
+          - {getBlogArn: !GetAtt [ GetBlog, Arn ],
              composeResultsArn: !GetAtt [ ComposeResults, Arn ],
              sendMailArn: !GetAtt [ SendMail, Arn ]}
       RoleArn: !GetAtt [ StatesExecutionRole, Arn ]

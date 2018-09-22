@@ -1,4 +1,5 @@
 from lambdas import nea_compose_results
+from unittest.mock import patch
 
 
 def test_render():
@@ -34,3 +35,21 @@ def test_render():
 
     actual = nea_compose_results.render(blogs)
     assert actual == expected
+
+
+@patch('lambdas.nea_compose_results.render')
+def test_lambda_handler(render):
+    render.return_value = 'Message'
+
+    event = {
+        'email_to': 'john@example.com',
+        'email_from': 'jane@example.com',
+        'blogs': [{'title': 'Some Blog'}]
+    }
+
+    result = nea_compose_results.lambda_handler(event, {})
+
+    assert result['message'] == 'Message'
+    assert result['email_to'] == event['email_to']
+    assert result['email_from'] == event['email_from']
+    render.assert_called_with(event['blogs'])

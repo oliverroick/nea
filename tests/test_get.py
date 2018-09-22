@@ -1,20 +1,20 @@
 from xml.etree import ElementTree as etree
 from datetime import date, timedelta
-from lambdas import nea_download_feed
+from lambdas import nea_get_blog
 
 
 def test_is_recent():
     item_string = '<item><pubDate>{} 00:00:00</pubDate></item>'
 
     pub_date = date.today() - timedelta(days=3)
-    pub_date_string = pub_date.strftime(nea_download_feed.pub_format)
+    pub_date_string = pub_date.strftime(nea_get_blog.pub_format)
     item = etree.fromstring(item_string.format(pub_date_string))
-    assert nea_download_feed.is_recent(item) is True
+    assert nea_get_blog.is_recent(item) is True
 
     pub_date = date.today() - timedelta(days=17)
-    pub_date_string = pub_date.strftime(nea_download_feed.pub_format)
+    pub_date_string = pub_date.strftime(nea_get_blog.pub_format)
     item = etree.fromstring(item_string.format(pub_date_string))
-    assert nea_download_feed.is_recent(item) is False
+    assert nea_get_blog.is_recent(item) is False
 
 
 def test_parse_item():
@@ -31,15 +31,15 @@ def test_parse_item():
         </item>
     """
     item = etree.fromstring(item_string.format(**item_parameters))
-    assert nea_download_feed.parse_item(item) == item_parameters
+    assert nea_get_blog.parse_item(item) == item_parameters
 
 
 def test_parse_blog():
     recent_date = date.today() - timedelta(days=3)
-    recent_date_string = recent_date.strftime(nea_download_feed.pub_format)
+    recent_date_string = recent_date.strftime(nea_get_blog.pub_format)
 
     older_date = date.today() - timedelta(days=17)
-    older_date_string = older_date.strftime(nea_download_feed.pub_format)
+    older_date_string = older_date.strftime(nea_get_blog.pub_format)
 
     item_string = """
         <rss>
@@ -67,14 +67,13 @@ def test_parse_blog():
         </rss>
     """.format(recent_date=recent_date_string, older_date=older_date_string)
 
-    parsed = nea_download_feed.parse_blog(item_string)
+    parsed = nea_get_blog.parse_blog(item_string)
     assert parsed['title'] == 'Blog Title'
     assert len(parsed['items']) == 2
 
 
 def test_lambda_handler(monkeypatch):
-    def mock_download_feed(url):
-        return """
+    feed_rss = """
             <rss>
                 <channel>
                     <title>Blog Title</title>
@@ -87,11 +86,54 @@ def test_lambda_handler(monkeypatch):
                 </channel>
             </rss>
         """
+
+    def mock_download_feed(url):
+        return feed_rss
+
     with monkeypatch.context() as m:
-        m.setattr(nea_download_feed, 'download_feed', mock_download_feed)
+        m.setattr(nea_get_blog, 'download_feed', mock_download_feed)
 
         event = {
-            'urls': ['https://example.com/feed1', 'https://example.com/feed1']
+            'email_to': 'john@example.com',
+            'email_from': 'jane@example.com',
+            'urls': [
+                'https://example.com/feed1',
+                'https://example.com/feed2'
+            ],
+            'blogs': [{'title': 'Some blog'}],
         }
 
-        assert len(nea_download_feed.lambda_handler(event, {})) == 2
+        result = nea_get_blog.lambda_handler(event, {})
+        assert result['email_to'] == event['email_to']
+        assert result['email_from'] == event['email_from']
+        assert len(result['urls']) == 1
+        assert len(result['blogs']) == 2
+
+        event = {
+            'email_to': 'john@example.com',
+            'email_from': 'jane@example.com',
+            'urls': [
+                'https://example.com/feed1',
+                'https://example.com/feed2'
+            ]
+        }
+
+        result = nea_get_blog.lambda_handler(event, {})
+        assert result['email_to'] == event['email_to']
+        assert result['email_from'] == event['email_from']
+        assert len(result['urls']) == 1
+        assert len(result['blogs']) == 1
+
+        event = {
+            'email_to': 'john@example.com',
+            'email_from': 'jane@example.com',
+            'urls': [
+                'https://example.com/feed1'
+            ]
+        }
+
+        result = nea_get_blog.lambda_handler(event, {})
+        assert result['email_to'] == event['email_to']
+        assert result['email_from'] == event['email_from']
+        assert result['urls'] == -1
+        assert len(result['blogs']) == 1

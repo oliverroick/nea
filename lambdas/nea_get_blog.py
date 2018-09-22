@@ -1,14 +1,6 @@
+from urllib.request import Request, urlopen
 from xml.etree import ElementTree as etree
 from datetime import date, datetime, timedelta
-
-from urllib.request import Request, urlopen
-
-
-def download_feed(url):
-    request = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-    with urlopen(request) as response:
-        html = response.read().decode('utf-8')
-    return html
 
 
 pub_format = '%a, %d %b %Y %H:%M:%S'
@@ -39,6 +31,23 @@ def parse_blog(src):
     return {"title": title, "items": items}
 
 
+def download_feed(url):
+    request = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    with urlopen(request) as response:
+        html = response.read().decode('utf-8')
+    return html
+
+
 def lambda_handler(event, context):
-    feeds = (download_feed(url) for url in event['urls'])
-    return [parse_blog(feed) for feed in feeds]
+    blogs = event.get('blogs', [])
+
+    url = event['urls'].pop()
+    xml = download_feed(url)
+    blogs.append(parse_blog(xml))
+
+    return {
+        'email_from': event['email_from'],
+        'email_to': event['email_to'],
+        'urls': event['urls'] or -1,
+        'blogs': blogs
+    }
