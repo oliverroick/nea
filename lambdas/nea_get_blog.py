@@ -1,5 +1,5 @@
 from urllib.request import Request, urlopen
-from .parser import parse_feed
+from parser import parse_feed
 
 
 def download_feed(url):

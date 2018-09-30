@@ -18,6 +18,14 @@ I want to build a thing that:
 *	Parse the feeds and extract all items that were published during the last seven days. 
 *	Sends an email to me, containing titles and links to all the new articles grouped by blog. 
 
+## Test
+
+AWS Lambda runs the Lambda handler as a script; we need absolute imports to sub-modules (in this case the `parsers`). Py.test runs the Lambda handlers from a package, so we need to add the `lambdas` directpry to `PYTHONPATH` to enable absolute imports.
+
+```sh
+PYTHONPATH=./lambdas/ py.test
+```
+
 ## Deploy
 
 To deploy, run the deployment script:
