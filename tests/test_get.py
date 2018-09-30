@@ -1,4 +1,3 @@
-from xml.etree import ElementTree as etree
 from unittest.mock import patch
 from lambdas import nea_get_blog
 
