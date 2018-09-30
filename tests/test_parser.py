@@ -1,6 +1,8 @@
+import pytest
 from xml.etree import ElementTree as etree
 from datetime import date, timedelta
-from lambdas.parser import util, rss, atom
+from unittest.mock import patch
+from lambdas.parser import util, rss, atom, parser
 
 
 # UTILS
@@ -143,3 +145,66 @@ def test_atom_parse():
     parsed = atom.parse(etree.fromstring(item_string))
     assert parsed['title'] == 'Blog Title'
     assert len(list(parsed['items'])) == 2
+
+
+# PARSER
+@patch('lambdas.parser.parser.rss')
+@patch('lambdas.parser.parser.atom')
+def test_parser_parse_rss(mocked_atom, mocked_rss):
+    feed_string = """
+        <rss>
+            <channel>
+                <title>Blog Title</title>
+            </channel>
+        </rss>
+    """
+    parsed_rss_blog = {'title': 'RSS Blog Title'}
+    parsed_atom_blog = {'title': 'Atom Blog Title'}
+    mocked_rss.parse.return_value = parsed_rss_blog
+    mocked_atom.parse.return_value = parsed_atom_blog
+
+    result = parser.parse_feed(feed_string)
+
+    assert result == parsed_rss_blog
+    mocked_rss.parse.assert_called_once()
+    mocked_atom.parse.assert_not_called()
+
+
+@patch('lambdas.parser.parser.rss')
+@patch('lambdas.parser.parser.atom')
+def test_parser_parse_atom(mocked_atom, mocked_rss):
+    feed_string = """
+        <feed>
+            <title>Blog Title</title>
+        </feed>
+    """
+    parsed_rss_blog = {'title': 'RSS Blog Title'}
+    parsed_atom_blog = {'title': 'Atom Blog Title'}
+    mocked_rss.parse.return_value = parsed_rss_blog
+    mocked_atom.parse.return_value = parsed_atom_blog
+
+    result = parser.parse_feed(feed_string)
+
+    assert result == parsed_atom_blog
+    mocked_rss.parse.assert_not_called()
+    mocked_atom.parse.assert_called_once()
+
+
+@patch('lambdas.parser.parser.rss')
+@patch('lambdas.parser.parser.atom')
+def test_parser_parse_unsupported(mocked_atom, mocked_rss):
+    feed_string = """
+        <unsupported>
+            <title>Blog Title</title>
+        </unsupported>
+    """
+    parsed_rss_blog = {'title': 'RSS Blog Title'}
+    parsed_atom_blog = {'title': 'Atom Blog Title'}
+    mocked_rss.parse.return_value = parsed_rss_blog
+    mocked_atom.parse.return_value = parsed_atom_blog
+
+    with pytest.raises(parser.UnsupportedFeedType):
+        parser.parse_feed(feed_string)
+
+    mocked_rss.parse.assert_not_called()
+    mocked_atom.parse.assert_not_called()

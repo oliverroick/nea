@@ -1,6 +1,5 @@
-from xml.etree import ElementTree as etree
 from urllib.request import Request, urlopen
-from .parser import rss
+from .parser import parse_feed
 
 
 def download_feed(url):
@@ -16,8 +15,7 @@ def lambda_handler(event, context):
     url = event['urls'].pop()
     xml = download_feed(url)
 
-    parsed_xml = etree.fromstring(xml)
-    blogs.append(rss.parse(parsed_xml))
+    blogs.append(parse_feed(xml))
 
     return {
         'email_from': event['email_from'],
