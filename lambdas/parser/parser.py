@@ -11,7 +11,7 @@ def parse_feed(xml):
 
     if parsed_xml.tag == 'rss':
         feed_parser = rss
-    elif parsed_xml.tag == 'feed':
+    elif parsed_xml.tag in ('feed', '{http://www.w3.org/2005/Atom}feed'):
         feed_parser = atom
     else:
         raise UnsupportedFeedType(parsed_xml.tag)

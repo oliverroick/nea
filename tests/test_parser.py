@@ -207,7 +207,7 @@ def test_parser_parse_rss(mocked_atom, mocked_rss, mocked_util):
 @patch('lambdas.parser.parser.atom')
 def test_parser_parse_atom(mocked_atom, mocked_rss, mocked_util):
     feed_string = """
-        <feed>
+        <feed xmlns="http://www.w3.org/2005/Atom">
             <title>Blog Title</title>
         </feed>
     """
