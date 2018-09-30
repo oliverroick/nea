@@ -22,4 +22,5 @@ def parse(blog_xml):
     items = blog_xml.findall('entry')
     parsed_items = (parse_item(item) for item in items)
     recent = filter(is_recent, parsed_items)
+
     return {"title": title, "items": list(recent)}

@@ -1,7 +1,8 @@
+import json
 import pytest
 from xml.etree import ElementTree as etree
 from datetime import date, timedelta
-from unittest.mock import patch
+from unittest.mock import patch, call
 from lambdas.parser import util, rss, atom, parser
 
 
@@ -15,6 +16,22 @@ def test_is_recent():
     pub_date = date.today() - timedelta(days=17)
     item = {'date': pub_date}
     assert util.is_recent(item) is False
+
+
+def test_serialisable():
+    item = {
+        'title': 'Some title',
+        'link': 'http://example.com',
+        'date': date(2018, 9, 17)
+    }
+    serialisable_item = util.serialisable(item)
+    assert serialisable_item['title'] == item['title']
+    assert serialisable_item['link'] == item['link']
+    assert serialisable_item['date'] == str(item['date'])
+    try:
+        json.dumps(serialisable_item)
+    except TypeError:
+        pytest.fail('Item dict is not JSON serialisable')
 
 
 # RSS
@@ -147,10 +164,25 @@ def test_atom_parse():
     assert len(list(parsed['items'])) == 2
 
 
+parsed_items = [{
+    'title': 'Post Title',
+    'link': 'http://example.com/posts/1',
+    'date': date(2018, 9, 17)
+}, {
+    'title': 'Post Title 2',
+    'link': 'http://example.com/posts/1',
+    'date': date(2018, 9, 20)
+}]
+parsed_rss_blog = {'title': 'RSS Blog Title', 'items': parsed_items}
+parsed_atom_blog = {'title': 'Atom Blog Title', 'items': parsed_items}
+calls = [call(item) for item in parsed_items]
+
+
 # PARSER
+@patch('lambdas.parser.parser.util')
 @patch('lambdas.parser.parser.rss')
 @patch('lambdas.parser.parser.atom')
-def test_parser_parse_rss(mocked_atom, mocked_rss):
+def test_parser_parse_rss(mocked_atom, mocked_rss, mocked_util):
     feed_string = """
         <rss>
             <channel>
@@ -158,8 +190,7 @@ def test_parser_parse_rss(mocked_atom, mocked_rss):
             </channel>
         </rss>
     """
-    parsed_rss_blog = {'title': 'RSS Blog Title'}
-    parsed_atom_blog = {'title': 'Atom Blog Title'}
+
     mocked_rss.parse.return_value = parsed_rss_blog
     mocked_atom.parse.return_value = parsed_atom_blog
 
@@ -168,18 +199,18 @@ def test_parser_parse_rss(mocked_atom, mocked_rss):
     assert result == parsed_rss_blog
     mocked_rss.parse.assert_called_once()
     mocked_atom.parse.assert_not_called()
+    mocked_util.serialisable.assert_has_calls(calls, any_order=True)
 
 
+@patch('lambdas.parser.parser.util')
 @patch('lambdas.parser.parser.rss')
 @patch('lambdas.parser.parser.atom')
-def test_parser_parse_atom(mocked_atom, mocked_rss):
+def test_parser_parse_atom(mocked_atom, mocked_rss, mocked_util):
     feed_string = """
         <feed>
             <title>Blog Title</title>
         </feed>
     """
-    parsed_rss_blog = {'title': 'RSS Blog Title'}
-    parsed_atom_blog = {'title': 'Atom Blog Title'}
     mocked_rss.parse.return_value = parsed_rss_blog
     mocked_atom.parse.return_value = parsed_atom_blog
 
@@ -188,18 +219,18 @@ def test_parser_parse_atom(mocked_atom, mocked_rss):
     assert result == parsed_atom_blog
     mocked_rss.parse.assert_not_called()
     mocked_atom.parse.assert_called_once()
+    mocked_util.serialisable.assert_has_calls(calls, any_order=True)
 
 
+@patch('lambdas.parser.parser.util')
 @patch('lambdas.parser.parser.rss')
 @patch('lambdas.parser.parser.atom')
-def test_parser_parse_unsupported(mocked_atom, mocked_rss):
+def test_parser_parse_unsupported(mocked_atom, mocked_rss, mocked_util):
     feed_string = """
         <unsupported>
             <title>Blog Title</title>
         </unsupported>
     """
-    parsed_rss_blog = {'title': 'RSS Blog Title'}
-    parsed_atom_blog = {'title': 'Atom Blog Title'}
     mocked_rss.parse.return_value = parsed_rss_blog
     mocked_atom.parse.return_value = parsed_atom_blog
 
@@ -208,3 +239,4 @@ def test_parser_parse_unsupported(mocked_atom, mocked_rss):
 
     mocked_rss.parse.assert_not_called()
     mocked_atom.parse.assert_not_called()
+    mocked_util.serialisable.assert_not_called()
