@@ -16,7 +16,7 @@ jobs:
         - pip install -r requirements-dev.txt
         - PYTHONPATH=./lambdas/ pytest
     - stage: Deploy
-      if: branch = master
+      if: branch = master AND type = push
       script:
         - "pip install awscli"
         - "./deploy.sh --email=$EMAIL --stage=$TRAVIS_BRANCH"
