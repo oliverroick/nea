@@ -166,7 +166,8 @@ Resources:
                   "https://www.zeldman.com/feed/",
                   "https://m.signalvnoise.com/feed",
                   "https://opengovpartnership.de/feed/",
-                  "https://zachholman.com/atom.xml"
+                  "https://zachholman.com/atom.xml",
+                  "http://feeds.kottke.org/main"
                 ]
               }
           RoleArn: !GetAtt [ CloudwatchEventRole, Arn ]
