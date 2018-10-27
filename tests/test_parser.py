@@ -92,6 +92,12 @@ def test_rss_parse():
 
 
 # ATOM
+def test_atom_get_timezone_index():
+    assert atom.get_timezone_index('2018-09-17T00:00:00+01:00') == 19
+    assert atom.get_timezone_index('2018-09-17T00:00:00-01:00') == 19
+    assert atom.get_timezone_index('2018-09-17T00:00:00Z') == 19
+
+
 def test_atom_parse_item():
     item_parameters = {
         'title': 'Some title',
@@ -99,7 +105,7 @@ def test_atom_parse_item():
         'date': date(2018, 9, 17)
     }
     item_string = """
-        <entry>
+        <entry xmlns="http://www.w3.org/2005/Atom">
             <title>{title}</title>
             <link href="{link}" />
             <published>2018-09-17T00:00:00+00:00</published>
@@ -117,7 +123,7 @@ def test_atom_parse_item_with_negative_time_diff():
         'date': date(2018, 9, 17)
     }
     item_string = """
-        <entry>
+        <entry xmlns="http://www.w3.org/2005/Atom">
             <title>{title}</title>
             <link href="{link}" />
             <published>2018-09-17T00:00:00-02:00</published>
@@ -136,7 +142,7 @@ def test_atom_parse():
     older_date_string = older_date.strftime(atom.pub_format)
 
     item_string = """
-        <feed>
+        <feed xmlns="http://www.w3.org/2005/Atom">
             <title>Blog Title</title>
             <entry>
                 <title>Title</title>
