@@ -7,6 +7,9 @@ class UnsupportedFeedType(Exception):
 
 
 def parse_feed(xml):
+    # Workaround for malformed content in Rand's blog
+    xml = xml.replace('', '')
+
     parsed_xml = etree.fromstring(xml)
 
     if parsed_xml.tag == 'rss':
