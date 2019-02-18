@@ -168,8 +168,7 @@ Resources:
                   "https://opengovpartnership.de/feed/",
                   "https://zachholman.com/atom.xml",
                   "https://slackhq.com/feed",
-                  "http://alicebartlett.co.uk/feed.xml",
-                  "https://alistapart.com/main/feed"
+                  "http://alicebartlett.co.uk/feed.xml"
                 ]
               }
           RoleArn: !GetAtt [ CloudwatchEventRole, Arn ]
