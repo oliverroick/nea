@@ -167,7 +167,8 @@ Resources:
                   "https://m.signalvnoise.com/feed",
                   "https://opengovpartnership.de/feed/",
                   "https://zachholman.com/atom.xml",
-                  "http://alicebartlett.co.uk/feed.xml"
+                  "http://alicebartlett.co.uk/feed.xml",
+                  "http://k1z.blog.uni-heidelberg.de/feed/"
                 ]
               }
           RoleArn: !GetAtt [ CloudwatchEventRole, Arn ]
