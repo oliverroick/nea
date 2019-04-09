@@ -168,7 +168,8 @@ Resources:
                   "https://opengovpartnership.de/feed/",
                   "https://zachholman.com/atom.xml",
                   "http://alicebartlett.co.uk/feed.xml",
-                  "http://k1z.blog.uni-heidelberg.de/feed/"
+                  "http://k1z.blog.uni-heidelberg.de/feed/",
+                  "https://feeds.feedburner.com/zenhabits"
                 ]
               }
           RoleArn: !GetAtt [ CloudwatchEventRole, Arn ]
