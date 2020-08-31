@@ -26,11 +26,11 @@ def test_render():
     }]
 
     posts = (
-        '<h2>Blog 1</h2>'
-        '<ul><li><a href="http://example.com/post1.1">Post 1.1</a></li>'
+        '<h2 style="font-size: 1rem; margin: 1rem 0 0 0;">Blog 1</h2>'
+        '<ul style="margin: 0; padding-left: 1rem;"><li><a href="http://example.com/post1.1">Post 1.1</a></li>'
         '<li><a href="http://example.com/post1.2">Post 1.2</a></li></ul>'
-        '<h2>Blog 2</h2>'
-        '<ul><li><a href="http://example.com/post2.1">Post 2.1</a></li></ul>'
+        '<h2 style="font-size: 1rem; margin: 1rem 0 0 0;">Blog 2</h2>'
+        '<ul style="margin: 0; padding-left: 1rem;"><li><a href="http://example.com/post2.1">Post 2.1</a></li></ul>'
     )
 
     expected = nea_compose_results.mail.substitute(posts=posts)

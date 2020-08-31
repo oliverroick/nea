@@ -2,20 +2,20 @@ from string import Template
 
 
 mail = Template("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" style="font-size: 20px; line-height: 1.5;">
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <title>Weekly digest</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
  </head>
  <body>
-  <h1>Happy Monday</h1>
-  <p>Here are all blogs that were published during the last week</p>
+  <h1 style="font-size: 2rem; margin-bottom: 0;">Happy Monday</h1>
+  <p style="margin-top: 0;">Here are all blogs that were published during the last week</p>
   $posts
  </body>
 </html>""")
 
-blog_template = Template('<h2>$blog_title</h2><ul>$posts</ul>')
+blog_template = Template('<h2 style="font-size: 1rem; margin: 1rem 0 0 0;">$blog_title</h2><ul style="margin: 0; padding-left: 1rem;">$posts</ul>')
 post_template = Template('<li><a href="$link">$title</a></li>')
 
 
