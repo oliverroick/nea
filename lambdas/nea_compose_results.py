@@ -15,7 +15,7 @@ mail = Template("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN
  </body>
 </html>""")
 
-blog_template = Template('<h2 style="font-size: 1rem; margin: 1rem 0 0 0;">$blog_title</h2><ul style="margin: 0; padding-left: 1rem;">$posts</ul>')
+blog_template = Template('<h2 style="font-size: 1rem; margin: 1rem 0 0 0;">$blog_title</h2><ul style="margin: 0; padding-left: 1.2rem;">$posts</ul>')
 post_template = Template('<li><a href="$link">$title</a></li>')
 
 
