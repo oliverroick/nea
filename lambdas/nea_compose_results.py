@@ -9,27 +9,37 @@ mail = Template("""<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
  </head>
  <body>
-  <ul>$posts</ul>
+  <h1>Happy Monday</h1>
+  <p>Here are all blogs that were published during the last week</p>
+  $posts
  </body>
 </html>""")
 
-post = Template('<li>$blog_title: <a href="$link">$title</a></li>')
+blog_template = Template('<h2>$blog_title</h2><ul>$posts</ul>')
+post_template = Template('<li><a href="$link">$title</a></li>')
 
 
 def render(blogs):
-    posts = []
     blogs = filter(lambda b: len(b['items']) > 0, blogs)
 
+    rendered_blogs = []
     for blog in blogs:
-        for item in blog['items']:
-            posts.append(post.substitute(blog_title=blog['title'],
-                                         link=item['link'],
-                                         title=item['title']))
+        rendered_posts = [
+            post_template.substitute(link=item['link'], title=item['title'])
+            for item in blog['items']
+        ]
 
-    if not posts:
+        rendered_blogs.append(
+            blog_template.substitute(
+                blog_title=blog['title'],
+                posts=''.join(rendered_posts)
+            )
+        )
+
+    if not rendered_blogs:
         return None
 
-    return mail.substitute(posts=''.join(posts))
+    return mail.substitute(posts=''.join(rendered_blogs))
 
 
 def lambda_handler(event, context):
