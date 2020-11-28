@@ -73,6 +73,18 @@ Resources:
                   - "states:StartExecution"
                 Resource: !Ref NeaStateMachine
 
+  PostCache:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      TableName: !Sub nea-${Environment}-post_cache
+      AttributeDefinitions:
+        - AttributeName : "url"
+          AttributeType : "S"
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+        - AttributeName: "url"
+          KeyType: HASH
+
   GetBlog:
     Type: AWS::Serverless::Function
     Properties:
