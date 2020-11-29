@@ -129,6 +129,9 @@ Resources:
       Policies:
         - AWSLambdaBasicExecutionRole
       Role: !GetAtt [ DynamoDBPutItemRole, Arn ]
+      Environment:
+        Variables:
+          db_table: !Sub nea-${Environment}-post_cache
 
   ComposeResults:
     Type: AWS::Serverless::Function
