@@ -1,9 +1,11 @@
+import os
+
 import boto3
 from botocore.exceptions import ClientError
 
 def store_link(link):
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table('nea-dev-post_cache')
+    table = dynamodb.Table(os.environ['db_table'])
     table.put_item(
         Item={'url': link},
         ConditionExpression='attribute_not_exists(#url)',
