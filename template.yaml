@@ -50,6 +50,27 @@ Resources:
                 Action:
                   - "lambda:InvokeFunction"
                 Resource: "*"
+  DynamoDBPutItemRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action: "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - PolicyName: DynamoDBPutItemPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "dynamodb:PutItem"
+                Resource: !GetAtt [ PostCache, Arn ]
 
   CloudwatchEventRole:
     Type: "AWS::IAM::Role"
@@ -96,6 +117,19 @@ Resources:
       Timeout: 30
       Policies:
         - AWSLambdaBasicExecutionRole
+  StorePostUrl:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub nea-${Environment}-store_posts
+      Handler: nea_store_posts.lambda_handler
+      Runtime: python3.6
+      CodeUri: lambdas
+      MemorySize: 128
+      Timeout: 30
+      Policies:
+        - AWSLambdaBasicExecutionRole
+      Role: !GetAtt [ DynamoDBPutItemRole, Arn ]
+
   ComposeResults:
     Type: AWS::Serverless::Function
     Properties:
