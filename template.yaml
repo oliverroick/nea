@@ -171,9 +171,14 @@ Resources:
                   "Choices": [{
                     "Variable": "$.urls",
                     "NumericEquals": -1,
-                    "Next": "ComposeResults"
+                    "Next": "StorePostUrls"
                   }],
                   "Default": "GetBlog"
+                },
+                "StorePostUrls": {
+                  "Type": "Task",
+                  "Resource": "${storePostUrlsArn}",
+                  "Next": "ComposeResults"
                 },
                 "ComposeResults": {
                   "Type": "Task",
@@ -188,6 +193,7 @@ Resources:
               }
             }
           - {getBlogArn: !GetAtt [ GetBlog, Arn ],
+             storePostUrlsArn: !GetAtt [ StorePostUrl, Arn ],
              composeResultsArn: !GetAtt [ ComposeResults, Arn ],
              sendMailArn: !GetAtt [ SendMail, Arn ]}
       RoleArn: !GetAtt [ StatesExecutionRole, Arn ]
