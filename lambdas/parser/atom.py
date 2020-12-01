@@ -23,10 +23,12 @@ def parse_item(item):
     title = item.find('atom:title', ns).text
     link = item.find('atom:link', ns).attrib['href']
 
-    pub_date = item.find('atom:published', ns).text
-    timezone_index = get_timezone_index(pub_date)
-    date_str = pub_date[:timezone_index]
-    date = datetime.strptime(date_str, pub_format).date()
+    date = None
+    pub_date = item.find('atom:published', ns)
+    if pub_date is not None:
+        timezone_index = get_timezone_index(pub_date.text)
+        date_str = pub_date.text[:timezone_index]
+        date = datetime.strptime(date_str, pub_format).date()
 
     return {"title": title, "link": link, "date": date}
 

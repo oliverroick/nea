@@ -2,13 +2,14 @@ from datetime import date, timedelta
 
 
 today = date.today()
-week_start = today - timedelta(days=8)
-week_end = today - timedelta(days=1)
+two_weeks_ago = today - timedelta(days=8)
 
 
 def is_recent(item):
-    date = item['date']
-    return week_start <= date and date <= week_end
+    d = today - timedelta(days=3)
+    if item['date']:
+        d = item['date']
+    return two_weeks_ago <= d and d <= today
 
 
 def serialisable(item):

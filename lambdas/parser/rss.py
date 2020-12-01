@@ -8,9 +8,11 @@ def parse_item(item):
     title = item.findtext('title')
     link = item.findtext('link')
 
+    date = None
     pub_date = item.findtext('pubDate')
-    date_str = pub_date[:pub_date.rfind(' ')]
-    date = datetime.strptime(date_str, pub_format).date()
+    if pub_date:
+        date_str = pub_date[:pub_date.rfind(' ')]
+        date = datetime.strptime(date_str, pub_format).date()
 
     return {"title": title, "link": link, "date": date}
 
