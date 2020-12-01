@@ -53,6 +53,23 @@ def test_rss_parse_item():
     assert rss.parse_item(item) == item_parameters
 
 
+def test_rss_parse_item_no_pub_date():
+    item_parameters = {
+        'title': 'Some title',
+        'link': 'http://example.com',
+        'date': None
+    }
+    item_string = """
+        <item>
+            <title>{title}</title>
+            <link>{link}</link>
+            <description>Lots of words</description>
+        </item>
+    """
+    item = etree.fromstring(item_string.format(**item_parameters))
+    assert rss.parse_item(item) == item_parameters
+
+
 def test_rss_parse():
     recent_date = date.today() - timedelta(days=3)
     recent_date_string = recent_date.strftime(rss.pub_format)
@@ -109,6 +126,23 @@ def test_atom_parse_item():
             <title>{title}</title>
             <link href="{link}" />
             <published>2018-09-17T00:00:00+00:00</published>
+            <content>Lots of words</content>
+        </entry>
+    """
+    item = etree.fromstring(item_string.format(**item_parameters))
+    assert atom.parse_item(item) == item_parameters
+
+
+def test_atom_parse_item_no_pub_date():
+    item_parameters = {
+        'title': 'Some title',
+        'link': 'http://example.com',
+        'date': None
+    }
+    item_string = """
+        <entry xmlns="http://www.w3.org/2005/Atom">
+            <title>{title}</title>
+            <link href="{link}" />
             <content>Lots of words</content>
         </entry>
     """
