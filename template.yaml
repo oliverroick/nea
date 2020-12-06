@@ -224,7 +224,8 @@ Resources:
                   "http://alicebartlett.co.uk/feed.xml",
                   "http://k1z.blog.uni-heidelberg.de/feed/",
                   "https://drewdevault.com/feed.xml",
-                  "https://wearecitizensadvice.org.uk/feed"
+                  "https://wearecitizensadvice.org.uk/feed",
+                  "https://daringfireball.net/feeds/articles"
                 ]
               }
           RoleArn: !GetAtt [ CloudwatchEventRole, Arn ]
