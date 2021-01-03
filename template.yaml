@@ -225,7 +225,8 @@ Resources:
                   "http://k1z.blog.uni-heidelberg.de/feed/",
                   "https://drewdevault.com/feed.xml",
                   "https://wearecitizensadvice.org.uk/feed",
-                  "https://daringfireball.net/feeds/articles"
+                  "https://daringfireball.net/feeds/articles",
+                  "https://cennydd.com/blog?format=rss"
                 ]
               }
           RoleArn: !GetAtt [ CloudwatchEventRole, Arn ]
