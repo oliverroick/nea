@@ -226,7 +226,8 @@ Resources:
                   "https://drewdevault.com/feed.xml",
                   "https://wearecitizensadvice.org.uk/feed",
                   "https://daringfireball.net/feeds/articles",
-                  "https://cennydd.com/blog?format=rss"
+                  "https://cennydd.com/blog?format=rss",
+                  "https://airbagindustries.com/index.xml"
                 ]
               }
           RoleArn: !GetAtt [ CloudwatchEventRole, Arn ]
