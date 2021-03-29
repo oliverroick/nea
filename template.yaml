@@ -227,7 +227,8 @@ Resources:
                   "https://cennydd.com/blog?format=rss",
                   "https://airbagindustries.com/index.xml",
                   "https://uclexcites.blog/feed/",
-                  "https://developmentseed.org/rss.xml"
+                  "https://developmentseed.org/rss.xml",
+                  "https://povesham.wordpress.com/feed/"
                 ]
               }
           RoleArn: !GetAtt [ CloudwatchEventRole, Arn ]
