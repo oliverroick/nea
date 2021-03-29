@@ -226,7 +226,8 @@ Resources:
                   "https://daringfireball.net/feeds/articles",
                   "https://cennydd.com/blog?format=rss",
                   "https://airbagindustries.com/index.xml",
-                  "https://uclexcites.blog/feed/"
+                  "https://uclexcites.blog/feed/",
+                  "https://developmentseed.org/rss.xml"
                 ]
               }
           RoleArn: !GetAtt [ CloudwatchEventRole, Arn ]
