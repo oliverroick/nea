@@ -229,7 +229,8 @@ Resources:
                   "https://uclexcites.blog/feed/",
                   "https://developmentseed.org/rss.xml",
                   "https://povesham.wordpress.com/feed/",
-                  "http://www.aaronsw.com/2002/feeds/pgessays.rss"
+                  "http://www.aaronsw.com/2002/feeds/pgessays.rss",
+                  "https://landscapevalues.org/ispm/feed/"
                 ]
               }
           RoleArn: !GetAtt [ CloudwatchEventRole, Arn ]
