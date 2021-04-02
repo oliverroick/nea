@@ -228,7 +228,8 @@ Resources:
                   "https://airbagindustries.com/index.xml",
                   "https://uclexcites.blog/feed/",
                   "https://developmentseed.org/rss.xml",
-                  "https://povesham.wordpress.com/feed/"
+                  "https://povesham.wordpress.com/feed/",
+                  "http://www.aaronsw.com/2002/feeds/pgessays.rss"
                 ]
               }
           RoleArn: !GetAtt [ CloudwatchEventRole, Arn ]
