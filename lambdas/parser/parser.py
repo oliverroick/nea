@@ -20,6 +20,6 @@ def parse_feed(xml):
         raise UnsupportedFeedType(parsed_xml.tag)
 
     parsed_blog = feed_parser.parse(parsed_xml)
-    parsed_blog['items'] = list(map(util.serialisable, parsed_blog['items']))
+    parsed_blog['items'] = list(map(util.serialisable, parsed_blog['items']))[:10]
 
     return parsed_blog
