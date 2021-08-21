@@ -32,7 +32,6 @@ To deploy, run the deployment script:
 
 ```sh
 ./deploy.sh --email=joe@example.com --profile=joe --stage=prod
-
 ```
 
 ### Arguments
