@@ -230,7 +230,8 @@ Resources:
                   "https://povesham.wordpress.com/feed/",
                   "http://www.aaronsw.com/2002/feeds/pgessays.rss",
                   "https://landscapevalues.org/ispm/feed/",
-                  "https://joemoran.net/feed/"
+                  "https://joemoran.net/feed/",
+                  "https://wille.me/feed.xml"
                 ]
               }
           RoleArn: !GetAtt [ CloudwatchEventRole, Arn ]
