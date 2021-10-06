@@ -231,7 +231,8 @@ Resources:
                   "http://www.aaronsw.com/2002/feeds/pgessays.rss",
                   "https://landscapevalues.org/ispm/feed/",
                   "https://joemoran.net/feed/",
-                  "https://wille.me/feed.xml"
+                  "https://wille.me/feed.xml",
+                  "https://planet.osgeo.org/rss20.xml"
                 ]
               }
           RoleArn: !GetAtt [ CloudwatchEventRole, Arn ]
