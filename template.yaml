@@ -232,7 +232,8 @@ Resources:
                   "https://joemoran.net/feed/",
                   "https://wille.me/feed.xml",
                   "https://planet.osgeo.org/rss20.xml",
-                  "https://www.gislounge.com/feed/"
+                  "https://www.gislounge.com/feed/",
+                  "https://www.justinobeirne.com/new-items-feed?format=rss"
                 ]
               }
           RoleArn: !GetAtt [ CloudwatchEventRole, Arn ]
