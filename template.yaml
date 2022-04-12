@@ -236,7 +236,7 @@ Resources:
                   "https://www.justinobeirne.com/new-items-feed?format=rss",
                   "https://alukach.com/index.xml",
                   "https://www.placemark.io/post/rss.xml",
-                  "https://reactjs.org/feed.xml
+                  "https://reactjs.org/feed.xml"
                 ]
               }
           RoleArn: !GetAtt [ CloudwatchEventRole, Arn ]
