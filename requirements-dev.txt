@@ -1,2 +1,2 @@
-pytest==3.8.0
+pytest==9.0.3
 boto3==1.9.7
